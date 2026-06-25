@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learning Git and GitHub</title>
+    <style>
+        /* Base Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Animated Background */
+        body, html {
+            height: 100%;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden; /* Prevents scrollbars from the sparking canvas */
+            background: linear-gradient(-45deg, #d24738, #256c98, #2727a5, #851b73);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: #ffffff;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Canvas for Spark Effect */
+        #sparkCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none; /* Lets you click through the canvas to the content below */
+            z-index: 9999;
+        }
+
+        /* Portfolio Content Styling */
+        .content-wrapper {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 5rem;
+            margin-bottom: 10px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 300;
+            color: #a8b2d1;
+            margin-bottom: 40px;
+            letter-spacing: 1px;
+        }
+
+        .skills-container {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 600px;
+        }
+
+        .skill-tag {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 12px 24px;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            font-weight: 600;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            cursor: default;
+        }
+
+        .skill-tag:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+            border-color: rgba(255, 255, 255, 0.5);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="sparkCanvas"></canvas>
+
+    <div class="content-wrapper">
+        <h1>Mayank Sharma</h1>
+        <h2>Software Developer</h2>
+        
+        <div class="skills-container">
+            <span class="skill-tag">C++</span>
+            <span class="skill-tag">C</span>
+            <span class="skill-tag">Python</span>
+            <span class="skill-tag">Git and GitHub</span>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('sparkCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Resize canvas to fill window
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        
+        let particles = [];
+        
+        // Update canvas size if the window is resized
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+        
+        // Track mouse position
+        const mouse = {
+            x: null,
+            y: null
+        };
+        
+        // Generate sparks when the mouse moves
+        window.addEventListener('mousemove', (event) => {
+            mouse.x = event.x;
+            mouse.y = event.y;
+            // Add 3 particles per mouse movement frame
+            for (let i = 0; i < 3; i++) {
+                particles.push(new Spark());
+            }
+        });
+        
+        class Spark {
+            constructor() {
+                this.x = mouse.x;
+                this.y = mouse.y;
+                // Random size between 1 and 6
+                this.size = Math.random() * 5 + 1;
+                // Random velocity for scattering effect
+                this.speedX = Math.random() * 3 - 1.5;
+                this.speedY = Math.random() * 3 - 1.5;
+                // Random vibrant colors (HSL keeps them bright)
+                this.color = 'hsl(' + Math.random() * 360 + ', 100%, 60%)';
+            }
+            
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                // Shrink the spark over time
+                if (this.size > 0.2) this.size -= 0.1;
+            }
+            
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+        
+        function animateSparks() {
+            // Clear the canvas every frame to prevent trails from staying permanently
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+                
+                // Remove particle from array when it gets too small
+                if (particles[i].size <= 0.2) {
+                    particles.splice(i, 1);
+                    i--; // Adjust index after removal
+                }
+            }
+            requestAnimationFrame(animateSparks);
+        }
+        
+        // Start the animation loop
+        animateSparks();
+    </script>
+</body>
+</html>
