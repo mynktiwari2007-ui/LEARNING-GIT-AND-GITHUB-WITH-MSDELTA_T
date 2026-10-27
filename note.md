@@ -1,6 +1,3 @@
-#  Billo bage billiya de ki karegi Git padhake tu kya karegi 😂🤮🤣😒❤️❤️❤️❤️😊
-#  Pyari si shuruaat pyare se logo ke sath welcome to msdelta_t coding.
-
 # 1.GitHub
     => working on a central code base is called GitHub.
 
